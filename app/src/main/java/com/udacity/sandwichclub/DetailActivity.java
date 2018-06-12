@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
+
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -43,7 +46,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
@@ -56,7 +59,61 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    private void populateUI(Sandwich sandwich) {
+        TextView descriptionTextView = findViewById(R.id.description_tv);
+        String description = sandwich.getDescription();
+        if (description == null || description.equals("")) {
+            description = getString(R.string.detail_error_message);
+        }
+        descriptionTextView.setText(description);
+
+        TextView ingredientsTextView = findViewById(R.id.ingredients_tv);
+        String ingredients;
+        List<String> ingredientsList = sandwich.getIngredients();
+        if (ingredientsList.isEmpty()) {
+            ingredients = getString(R.string.detail_error_message);
+        } else {
+            StringBuilder ingredientsBuilder = new StringBuilder();
+            for (int i = 0; i < ingredientsList.size(); i++) {
+                ingredientsBuilder
+                        .append("\u2022 ") // Bullet point
+                        .append(ingredientsList.get(i));
+
+                if (i != ingredientsList.size() - 1)
+                    ingredientsBuilder.append('\n');
+            }
+            ingredients = ingredientsBuilder.toString();
+        }
+        ingredientsTextView.setText(ingredients);
+
+        TextView placeOfOriginTextView = findViewById(R.id.origin_tv);
+        String placeOfOrigin = sandwich.getPlaceOfOrigin();
+        if (placeOfOrigin == null || placeOfOrigin.equals("")) {
+            placeOfOrigin = getString(R.string.detail_error_message);
+        }
+        placeOfOriginTextView.setText(placeOfOrigin);
+
+        TextView alsoKnownAsTextView = findViewById(R.id.also_known_tv);
+        String alsoKnownAs;
+        List<String> alsoKnownAsList = sandwich.getAlsoKnownAs();
+        if (alsoKnownAsList.isEmpty()) {
+            alsoKnownAs = getString(R.string.detail_error_message);
+        } else {
+            StringBuilder akaBuilder = new StringBuilder();
+            for (int i = 0; i < alsoKnownAsList.size(); i++) {
+                akaBuilder
+                        .append("\u2022 ") // Bullet point
+                        .append(alsoKnownAsList.get(i));
+
+                if (i != alsoKnownAsList.size() - 1)
+                    akaBuilder.append('\n');
+            }
+            alsoKnownAs = akaBuilder.toString();
+        }
+        alsoKnownAsTextView.setText(alsoKnownAs);
+    }
 
     }
-}
+
+
+
